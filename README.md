@@ -2,15 +2,15 @@
 
 ## Test 1
 
-- Fork and clone this project locally then begin the test in the repo.
+- [x] Fork and clone this project locally then begin the test in the repo.
 
 - Following the serverless architecture and the microservice principles, set up a backend using both the [Middy](https://middy.js.org/) and [Serverless Framework](https://serverless.com/) that will be deployed to [AWS Lambda](https://aws.amazon.com/lambda/).
 
-- Project should be in typescript
+- [x] Project should be in typescript
 
 - Follow the Functional programming (FP) technique
 
-- Set up a GraphQL API layer using [Hasura](https://hasura.io/) with a PostgreSQL Database
+- [x] Set up a GraphQL API layer using [Hasura](https://hasura.io/) with a PostgreSQL Database
 
 - All interactions with the database should be through the GraphQL API
 
