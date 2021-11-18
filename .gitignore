@@ -24,4 +24,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-
+google-private-key.json
+.esbuild
+.serverless

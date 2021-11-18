@@ -1,11 +1,13 @@
 import type { AWS } from '@serverless/typescript';
 
-import hello from '@functions/hello';
+import sample from '@functions/sample';
+import signup from '@functions/signup';
+import login from '@functions/login';
 
 const serverlessConfiguration: AWS = {
   service: 'backend-coding-test',
   frameworkVersion: '2',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-offline'],
   provider: {
     name: 'aws',
     region: 'us-east-2',
@@ -21,7 +23,7 @@ const serverlessConfiguration: AWS = {
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { hello },
+  functions: { sample, signup, login },
   package: { individually: true },
   custom: {
     esbuild: {
