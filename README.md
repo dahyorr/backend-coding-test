@@ -12,15 +12,15 @@
 
 - [x] Set up a GraphQL API layer using [Hasura](https://hasura.io/) with a PostgreSQL Database
 
-- All interactions with the database should be through the GraphQL API
+- [x] All interactions with the database should be through the GraphQL API
 
-- Implement & use [graphql-request](https://github.com/prisma-labs/graphql-request) to interact with with the GraphQL API
+- [x] Implement & use [graphql-request](https://github.com/prisma-labs/graphql-request) to interact with with the GraphQL API
 
-- Setup a middleware using middy that validates firebase auth token for each request using the [firebase admin library](https://firebase.google.com/docs/admin/setup).
+- [x] Setup a middleware using middy that validates firebase auth token for each request using the [firebase admin library](https://firebase.google.com/docs/admin/setup).
 
 - Setup all other middleware that would commonly be used such as for security, logging & data validation.
 
-- The backend should provide services that will allow users to sign up a profile that consists of `name` and `date of birth` which would authenticate with firebase authentication using the [firebase admin library](https://firebase.google.com/docs/admin/setup). Profile data should be stored on the database.
+- [x] The backend should provide services that will allow users to sign up a profile that consists of `name` and `date of birth` which would authenticate with firebase authentication using the [firebase admin library](https://firebase.google.com/docs/admin/setup). Profile data should be stored on the database.
 
 - Create a blog service that allows the creation and management of blog articles. All API routes of the blog service should be protected and only accessible through the `admin` role.
 
