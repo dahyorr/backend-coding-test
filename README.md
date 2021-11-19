@@ -4,11 +4,11 @@
 
 - [x] Fork and clone this project locally then begin the test in the repo.
 
-- Following the serverless architecture and the microservice principles, set up a backend using both the [Middy](https://middy.js.org/) and [Serverless Framework](https://serverless.com/) that will be deployed to [AWS Lambda](https://aws.amazon.com/lambda/).
+- [x] Following the serverless architecture and the microservice principles, set up a backend using both the [Middy](https://middy.js.org/) and [Serverless Framework](https://serverless.com/) that will be deployed to [AWS Lambda](https://aws.amazon.com/lambda/).
 
 - [x] Project should be in typescript
 
-- Follow the Functional programming (FP) technique
+- [x] Follow the Functional programming (FP) technique
 
 - [x] Set up a GraphQL API layer using [Hasura](https://hasura.io/) with a PostgreSQL Database
 
@@ -18,15 +18,15 @@
 
 - [x] Setup a middleware using middy that validates firebase auth token for each request using the [firebase admin library](https://firebase.google.com/docs/admin/setup).
 
-- Setup all other middleware that would commonly be used such as for security, logging & data validation.
+- [x] Setup all other middleware that would commonly be used such as for security, logging & data validation.
 
 - [x] The backend should provide services that will allow users to sign up a profile that consists of `name` and `date of birth` which would authenticate with firebase authentication using the [firebase admin library](https://firebase.google.com/docs/admin/setup). Profile data should be stored on the database.
 
-- Create a blog service that allows the creation and management of blog articles. All API routes of the blog service should be protected and only accessible through the `admin` role.
+- [x] Create a blog service that allows the creation and management of blog articles. All API routes of the blog service should be protected and only accessible through the `admin` role.
 
-- A public API route should be provided that returns a paginated list of blog articles using GraphQL Relay Cursor-based pagination method.
+- [x] A public API route should be provided that returns a paginated list of blog articles using GraphQL Relay Cursor-based pagination method.
 
-- Implement full text search with Hasura GraphQL API and Postgres for all blogs where their title & content are searchable
+- [x] Implement full text search with Hasura GraphQL API and Postgres for all blogs where their title & content are searchable
 
 - Deploy each route to its own Lambda function using the Serverless Framework.
 
