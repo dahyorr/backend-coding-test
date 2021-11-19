@@ -1,8 +1,13 @@
 import type { AWS } from '@serverless/typescript';
 
-import sample from '@functions/sample';
 import signup from '@functions/signup';
 import login from '@functions/login';
+import createBlogPost from '@functions/createBlogPost';
+import listBlogPosts from '@functions/listBlogPosts';
+import retrieveBlogPost from '@functions/retrieveBlogPost';
+import searchBlogPost from '@functions/searchBlogPost';
+import updateBlogPost from '@functions/updateBlogPost';
+import deleteBlogPost from '@functions/deleteBlogPost';
 
 const serverlessConfiguration: AWS = {
   service: 'backend-coding-test',
@@ -23,7 +28,16 @@ const serverlessConfiguration: AWS = {
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { sample, signup, login },
+  functions: { 
+    signup,
+    login, 
+    createBlogPost, 
+    listBlogPosts, 
+    retrieveBlogPost, 
+    searchBlogPost,
+    updateBlogPost,
+    deleteBlogPost 
+  },
   package: { individually: true },
   custom: {
     esbuild: {

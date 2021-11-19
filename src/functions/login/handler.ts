@@ -1,43 +1,41 @@
+import '@utils/firebase'
+
 import { middyfy } from '@libs/lambda';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
-import schema from './schema';
-import bodyValidator from '@middlewares/bodyValidator';
 import LoginSchema from '@validators/LoginSchema';
+import schema from './schema';
+
+import bodyValidator from '@middlewares/bodyValidator';
+import httpErrorHandler from '@middy/http-error-handler';
+
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
-import '@utils/firebase'
+import { defaultFallbackMessage, InvalidUser } from '@utils/customErrors';
 
 
 const logIn: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=> {
     const {email, password} = event.body
-    try{
-        const auth = getAuth()
-        const {user} = await signInWithEmailAndPassword(auth, email, password)
-        const {uid} = user
-        const accessToken = await user.getIdToken()
-        return {
-            statusCode: 200,
-            body: JSON.stringify({uid, accessToken})
-        }
-    }catch(err){
-        console.log(err)
-        let statusCode = 500
-        let message = err.message
-        if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'){
-            statusCode = 401
-            message = 'Invalid Email/Password'
-        }
+    const auth = getAuth()
 
-        return {
-            statusCode,
-            body: JSON.stringify({
-                status: 'error',
-                message: message || 'An Error Occured'
-            })
-        }
+    // handle firebase auth error
+    const user = await signInWithEmailAndPassword(auth, email, password)
+        .then(({user}) => user)
+        .catch((err)=>{
+            if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'){
+                throw InvalidUser
+            }
+            else{
+                console.log(err)
+                throw err
+            }
+        })
+
+    const accessToken = await user.getIdToken(true)
+    return {
+        statusCode: 200,
+        body: JSON.stringify({uid: user.uid, accessToken})
     }
 }
 
 export const main = middyfy(logIn)
     .use(bodyValidator(LoginSchema))
-
-    
+    .use(httpErrorHandler({fallbackMessage: defaultFallbackMessage}))

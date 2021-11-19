@@ -6,8 +6,9 @@ export default {
         {
             http: {
                 method: 'get',
-                path: '/api/sample',
-                request: {}
+                path: '/api/search',
+                request: {
+                }
             }
         }
     ]
