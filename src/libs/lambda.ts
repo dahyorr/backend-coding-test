@@ -6,7 +6,7 @@ import cors from "@middy/http-cors"
 
 export const middyfy = (handler) => {
   return middy(handler)
-    .use(logger())
+    // .use(logger())
     .use(middyJsonBodyParser())
     .use(httpSecurityHeaders({
       hidePoweredBy: {

@@ -6,6 +6,8 @@
       "@middlewares/*": ["src/middlewares/*"],
       "@validators/*": ["src/validators/*"],
       "@utils/*": ["src/utils/*"],
+      "@graphql/*": ["src/graphql/*"],
+      "@types": ["src/types/index"],
       "@libs/*": ["src/libs/*"]
     }
   }

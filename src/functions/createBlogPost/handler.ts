@@ -1,38 +1,29 @@
 import { middyfy } from '@libs/lambda';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
-import { AuthHandlerContext } from 'src/types';
+import { AuthHandlerContext, PostsInsertInput } from 'src/types';
 import schema from './schema';
 // middlewares
 import bodyValidator from '@middlewares/bodyValidator';
 import httpErrorHandler from '@middy/http-error-handler'
 import firebaseAuth from '@middlewares/firebaseAuth';
 
-import { gql } from 'graphql-request'
 import { sendDatabaseQuery } from '@utils/graphqlApi';
 import CreatePostSchema from '@validators/CreatePostSchema';
 import { defaultFallbackMessage } from '@utils/customErrors';
+import { createPostMutation } from '@graphql/queries';
+import { MutationRoot } from '@types';
 
 const createBlogPost: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event, context: AuthHandlerContext)=> {
-    const {title, content, published} = event.body
-    const author = context.user.uid
-    const query = gql`
-    mutation CreatePost {
-        insert_posts_one(object: {title: "${title}", authorId: "${author}", content: "${content}", published: ${Boolean(published)}}) {
-            id
-            title
-            lastUpdated
-            createdAt
-            published
-            content
-            author{
-                name
-            }
-        }
+    const {title, content, published = false} = event.body
+    const authorId = context.user.uid
+    const post: PostsInsertInput = {
+        title, 
+        authorId, 
+        content,
+        published
     }
-    `
-    const {insert_posts_one} = await sendDatabaseQuery(query) as {'insert_posts_one': {
-        [key: string] : any
-    }}
+
+    const {insert_posts_one} = await sendDatabaseQuery<MutationRoot>(createPostMutation, post)
     
     return {
         statusCode: 201,

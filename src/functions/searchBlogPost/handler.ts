@@ -5,7 +5,8 @@ import httpErrorHandler from '@middy/http-error-handler';
 
 import { defaultFallbackMessage, NoSearchQuery } from '@utils/customErrors';
 import { sendDatabaseQuery } from '@utils/graphqlApi';
-import { gql } from 'graphql-request'
+import { QueryRoot } from '@types';
+import { searchPostQuery } from '@graphql/queries';
 
 const searchBlogPost = async (event: APIGatewayProxyEvent)=> {
     let searchQuery = ''
@@ -14,18 +15,12 @@ const searchBlogPost = async (event: APIGatewayProxyEvent)=> {
     }
     if (!searchQuery){
         throw NoSearchQuery
+    }else{
+        searchQuery = `%${searchQuery}%`
     }
-    const query = gql`
-    query SearchPosts {
-        posts(where: {_or: [{title: {_ilike: "%${searchQuery}%"}}, {content: {_ilike: "%${searchQuery}%"}}]}) {
-            id
-            title
-        }
-    }
-    `
-    const {posts} = await sendDatabaseQuery(query) as {'posts': {
-        [key: string] : any
-    }}
+    
+    const {posts} = await sendDatabaseQuery<QueryRoot>(searchPostQuery, {searchQuery})
+
     return {
         statusCode: 200,
         body: JSON.stringify({

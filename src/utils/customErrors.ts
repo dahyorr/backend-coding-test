@@ -36,9 +36,14 @@ export const NoToken = new createHttpError.Unauthorized(JSON.stringify({
     message: 'No token provided'
 }))
 
-export const InValidToken = new createHttpError.Unauthorized(JSON.stringify({
+export const InvalidToken = new createHttpError.Unauthorized(JSON.stringify({
     status: 'error',
     message: 'Invalid token provided'
+}))
+
+export const TokenExpired = new createHttpError.Unauthorized(JSON.stringify({
+    status: 'error',
+    message: 'Token has expired'
 }))
 
 export const NoSearchQuery = new createHttpError.UnprocessableEntity(JSON.stringify({

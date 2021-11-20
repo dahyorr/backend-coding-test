@@ -1,5 +1,6 @@
 import { hashuraEndpoint } from "./config";
 import { GraphQLClient } from 'graphql-request'
+import { Variables } from "graphql-request/dist/types";
 
 const graphQLClient = new GraphQLClient(hashuraEndpoint, {
     headers: {
@@ -8,4 +9,4 @@ const graphQLClient = new GraphQLClient(hashuraEndpoint, {
     } 
 })
 
-export const sendDatabaseQuery = async (query: string) => await graphQLClient.request(query)
+export const sendDatabaseQuery = async <T>(query: string, variables: Variables=null) => await graphQLClient.request<T>(query, variables)

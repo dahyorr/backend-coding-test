@@ -1,0 +1,14 @@
+overwrite: true
+schema: 
+  "https://backend-test.hasura.app/v1/graphql":
+    headers:
+      x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}
+generates:
+  src/types/graphqlTypings.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      namingConvention:
+        typeNames: change-case-all#pascalCase
+        transformUnderscore: true

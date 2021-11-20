@@ -10,10 +10,11 @@ import bodyValidator from '@middlewares/bodyValidator';
 import httpErrorHandler from '@middy/http-error-handler';
 
 import {getAuth} from 'firebase-admin/auth'
-import { gql } from 'graphql-request'
 import dayjs from 'dayjs';
 import { sendDatabaseQuery } from '@utils/graphqlApi';
 import { defaultFallbackMessage, EmailInUse } from '@utils/customErrors';
+import { MutationRoot, UsersInsertInput } from '@types';
+import { createUserProfileMutation } from '@graphql/queries';
 
 const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=> {
     const {name, email, password, dateOfBirth, role} = event.body
@@ -31,26 +32,19 @@ const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=
                 throw EmailInUse
             }
             else{
-                console.log(err)
                 throw err
             }
         })
-    
     await auth.setCustomUserClaims(uid, {role})
-    const query = gql`
-    mutation CreateUserProfile {
-        insert_users_one(object: {uid: "${uid}", dateOfBirth: "${dayjs(dateOfBirth).toISOString()}", name: "${name}"}) 
-        {
-            name
-            dateOfBirth
-            uid
-            createdAt
-        }
+
+    const userProfile: UsersInsertInput = {
+        uid,
+        name,
+        dateOfBirth: dayjs(dateOfBirth).toISOString()
     }
-    `
-    const {insert_users_one} = await sendDatabaseQuery(query) as {'insert_users_one': {
-        [key: string] : any
-    }}
+
+    const {insert_users_one} = await sendDatabaseQuery<MutationRoot>(createUserProfileMutation, userProfile) 
+
     return {
         statusCode: 201,
         body: JSON.stringify({
@@ -59,7 +53,6 @@ const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=
             details: insert_users_one
         }
     )}
-    
 }
 
 export const main = middyfy(signUp)

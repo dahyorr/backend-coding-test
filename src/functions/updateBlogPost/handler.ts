@@ -1,6 +1,6 @@
 import { middyfy } from '@libs/lambda';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
-import { AuthHandlerContext } from 'src/types';
+import { AuthHandlerContext, MutationRoot, PostsInsertInput, QueryRoot } from 'src/types';
 import schema from './schema';
 import CreatePostSchema from '@validators/CreatePostSchema';
 
@@ -8,12 +8,12 @@ import bodyValidator from '@middlewares/bodyValidator';
 import firebaseAuth from '@middlewares/firebaseAuth';
 import httpErrorHandler from '@middy/http-error-handler';
 
-import { gql } from 'graphql-request'
 import { sendDatabaseQuery } from '@utils/graphqlApi';
 import { defaultFallbackMessage, InvalidAuthor, InvalidPostId, PostNotFound } from '@utils/customErrors';
+import { getPostAuthorQuery, updatePostMutation } from '@graphql/queries';
 
 const updateBlogPost: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event, context: AuthHandlerContext)=> {
-    const {title, content, published} = event.body
+    const {title, content, published = false} = event.body
     let {postId} = event.pathParameters
     const id = parseInt(postId)
     if (!id){
@@ -21,17 +21,7 @@ const updateBlogPost: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
     }
 
     // check if post is valid and user is author
-    const initialQuery = gql`
-    query GetPostAuthor {
-        posts_by_pk(id: ${id}) {
-            authorId
-        }
-    }
-    `
-    const {posts_by_pk} = await sendDatabaseQuery(initialQuery) as {'posts_by_pk': {
-        [key: string] : any
-    }}
-
+    const {posts_by_pk} = await sendDatabaseQuery<QueryRoot>(getPostAuthorQuery, {id})
     if(!posts_by_pk){
         throw PostNotFound
     }
@@ -39,28 +29,15 @@ const updateBlogPost: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
         throw InvalidAuthor
     }
 
-    const query = gql`
-    mutation UpdatePost {
-        update_posts_by_pk(pk_columns: {id: ${id}}, _set: {
-            title: "${title}", 
-            content: ${content}, 
-            published: ${Boolean(published)}
-        }) {
-            id
-            title
-            content
-            published
-            lastUpdated
-            createdAt
-            author {
-                name
-            }
-        }
+    const post: PostsInsertInput = {
+        id,
+        title,
+        content,
+        published,
+        
     }
-    `
-    const {update_posts_by_pk} = await sendDatabaseQuery(query) as {'update_posts_by_pk': {
-        [key: string] : any
-    }}
+    const {update_posts_by_pk} = await sendDatabaseQuery<MutationRoot>(updatePostMutation, post)
+
     return {
         statusCode: 200,
         body: JSON.stringify({

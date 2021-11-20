@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "serverless.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serverless offline",
+    "deploy": "sls deploy",
+    "generate": "graphql-codegen --config codegen.yml -r dotenv/config"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -24,6 +27,10 @@
     "joi": "^17.4.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/introspection": "^2.1.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-operations": "^2.2.1",
     "@serverless/typescript": "^2.23.0",
     "@types/aws-lambda": "^8.10.71",
     "@types/http-errors": "^1.8.1",

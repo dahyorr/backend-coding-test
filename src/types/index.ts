@@ -2,6 +2,8 @@ import { Context } from "aws-lambda";
 import {DecodedIdToken} from 'firebase-admin/auth';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
+export * from './graphqlTypings'
+
 export type Role = 'admin' | 'user'
 
 export interface DecodedIdTokenWithClaims extends DecodedIdToken{

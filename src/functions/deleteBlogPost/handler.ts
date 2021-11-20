@@ -1,14 +1,13 @@
 import { middyfy } from '@libs/lambda';
-import { AuthHandlerContext } from 'src/types';
+import { AuthHandlerContext, MutationRoot, QueryRoot } from 'src/types';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 
 import firebaseAuth from '@middlewares/firebaseAuth';
 import httpErrorHandler from '@middy/http-error-handler'
 
-import { gql } from 'graphql-request'
 import { sendDatabaseQuery } from '@utils/graphqlApi';
-
 import {InvalidPostId, InvalidAuthor, defaultFallbackMessage, PostNotFound} from '@utils/customErrors'
+import { deletePostMutation, getPostAuthorQuery } from '@graphql/queries';
 
 const deleteBlogPost = async (event: APIGatewayProxyEvent, context: AuthHandlerContext)=> {
     let {postId} = event.pathParameters
@@ -17,19 +16,8 @@ const deleteBlogPost = async (event: APIGatewayProxyEvent, context: AuthHandlerC
         throw InvalidPostId
     }
 
-    // Get post author
-    const initialQuery = gql`
-    query GetPostAuthor {
-        posts_by_pk(id: ${id}) {
-            authorId
-        }
-    }
-    `
-    const {posts_by_pk} = await sendDatabaseQuery(initialQuery) as {'posts_by_pk': {
-        [key: string] : any
-    }}
-
     // check if post and author is valid
+    const {posts_by_pk} = await sendDatabaseQuery<QueryRoot>(getPostAuthorQuery, {id})
     if(!posts_by_pk){
         throw PostNotFound
     }
@@ -38,17 +26,7 @@ const deleteBlogPost = async (event: APIGatewayProxyEvent, context: AuthHandlerC
     }
 
     // Delete post
-    const query = gql`
-    mutation DeletePost {
-        delete_posts_by_pk(id: ${id}) {
-            id
-        }
-    }
-    `
-    const {delete_posts_by_pk} = await sendDatabaseQuery(query) as {'delete_posts_by_pk': {
-        [key: string] : any
-    }}
-    
+    const {delete_posts_by_pk} = await sendDatabaseQuery<MutationRoot>(deletePostMutation, {id})
     return {
         statusCode: 200,
         body: JSON.stringify({

@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import {getAuth} from 'firebase-admin/auth';
 import '@utils/firebase'
 import {AuthMiddlewareFn, DecodedIdTokenWithClaims } from 'src/types';
-import { AdminRoleRequired, InValidToken, NoToken } from '@utils/customErrors';
+import { AdminRoleRequired, InvalidToken, NoToken, TokenExpired } from '@utils/customErrors';
 
 const firebaseAuth = (options={isAdmin:false}): middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> => {
 	const firebaseAuthBefore: AuthMiddlewareFn = async (
@@ -20,7 +20,7 @@ const firebaseAuth = (options={isAdmin:false}): middy.MiddlewareObj<APIGatewayPr
 		const splitToken = token.split(' ')
 
 		if(!token.startsWith('Bearer') || (token && splitToken.length !== 2)){
-		throw InValidToken
+		throw InvalidToken
 		}
 
 		const auth = getAuth()
@@ -28,11 +28,13 @@ const firebaseAuth = (options={isAdmin:false}): middy.MiddlewareObj<APIGatewayPr
 			.then((res) => res as DecodedIdTokenWithClaims)
 			.catch(err => {
 				if(err.code === 'app-check/invalid-argument' || err.code === `auth/argument-error`){
-					throw InValidToken
+					throw InvalidToken
+				}
+				else if(err.code === 'auth/id-token-expired' ){
+					throw TokenExpired
 				}
 				else{
-					console.log(err)
-					throw(err)
+					throw err
 				}
 			})
 

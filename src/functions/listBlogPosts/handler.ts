@@ -3,9 +3,10 @@ import { APIGatewayProxyEvent } from 'aws-lambda';
 
 import httpErrorHandler from '@middy/http-error-handler';
 
-import { gql } from 'graphql-request'
 import { sendDatabaseQuery } from '@utils/graphqlApi';
 import { defaultFallbackMessage } from '@utils/customErrors';
+import { getPostsQuery } from '@graphql/queries';
+import { QueryRoot } from '@types';
 
 const listBlogPosts = async (event: APIGatewayProxyEvent)=> {
     const queryParams = event.queryStringParameters
@@ -17,28 +18,13 @@ const listBlogPosts = async (event: APIGatewayProxyEvent)=> {
     if(queryParams && parseInt(queryParams.after)){
         after = parseInt(queryParams.after)
     }
-    const query = gql`
-    query GetPosts {
-        posts(limit:${count} order_by: {id: asc}  where: {id: {_gt: ${after}}}) {
-            id
-            title
-            lastUpdated
-            published
-            author {
-                name
-            }
-        }
-    }
-    `
-    const res = await sendDatabaseQuery(query) as {posts: {
-        [key: string]: any
-    }}
 
+    const {posts} = await sendDatabaseQuery<QueryRoot>(getPostsQuery, {after, count})
     return {
         statusCode: 201,
         body: JSON.stringify({
             status: 'success',
-            posts: res.posts
+            posts
         }
     )}
 }

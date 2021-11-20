@@ -24,7 +24,6 @@ const logIn: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=>
                 throw InvalidUser
             }
             else{
-                console.log(err)
                 throw err
             }
         })
