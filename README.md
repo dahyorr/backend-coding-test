@@ -28,13 +28,13 @@
 
 - [x] Implement full text search with Hasura GraphQL API and Postgres for all blogs where their title & content are searchable
 
-- Deploy each route to its own Lambda function using the Serverless Framework.
+- [x] Deploy each route to its own Lambda function using the Serverless Framework.
 
 ## Extra Points
 
-- Implement code/typescript generation base on the GraphQL API
+- [x] Implement code/typescript generation base on the GraphQL API
 
-- Generate an [OpenAPI](https://swagger.io/specification/) documentation for all routes
+- [x] Generate an [OpenAPI](https://swagger.io/specification/) documentation for all routes
 
 ## Good Job!
 

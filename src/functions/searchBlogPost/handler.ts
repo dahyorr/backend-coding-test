@@ -24,7 +24,6 @@ const searchBlogPost = async (event: APIGatewayProxyEvent)=> {
     return {
         statusCode: 200,
         body: JSON.stringify({
-            status: 'success',
             data: posts
         }
     )}

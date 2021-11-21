@@ -5,5 +5,4 @@ export default Joi.object({
     password: Joi.string().min(8).required(),
     name: Joi.string().required(),
     dateOfBirth: Joi.date().iso().less(Date.now()).required(),
-    role: Joi.string().valid('user', 'admin')
 })

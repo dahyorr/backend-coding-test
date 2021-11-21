@@ -19,8 +19,8 @@ const firebaseAuth = (options={isAdmin:false}): middy.MiddlewareObj<APIGatewayPr
 		
 		const splitToken = token.split(' ')
 
-		if(!token.startsWith('Bearer') || (token && splitToken.length !== 2)){
-		throw InvalidToken
+		if(token && splitToken.length !== 2){
+			throw InvalidToken
 		}
 
 		const auth = getAuth()

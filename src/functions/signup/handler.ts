@@ -16,8 +16,8 @@ import { defaultFallbackMessage, EmailInUse } from '@utils/customErrors';
 import { MutationRoot, UsersInsertInput } from '@types';
 import { createUserProfileMutation } from '@graphql/queries';
 
-const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=> {
-    const {name, email, password, dateOfBirth, role} = event.body
+const signup: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=> {
+    const {name, email, password, dateOfBirth} = event.body
     const auth = getAuth()
 
     // handle firebase error
@@ -35,7 +35,7 @@ const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=
                 throw err
             }
         })
-    await auth.setCustomUserClaims(uid, {role})
+    await auth.setCustomUserClaims(uid, {role: 'user'})
 
     const userProfile: UsersInsertInput = {
         uid,
@@ -49,12 +49,12 @@ const signUp: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event)=
         statusCode: 201,
         body: JSON.stringify({
             status: 'success',
-            message: "User created successfully",
+            message: "User Created successfully",
             details: insert_users_one
         }
     )}
 }
 
-export const main = middyfy(signUp)
+export const main = middyfy(signup)
     .use(bodyValidator(SignupSchema))
     .use(httpErrorHandler({fallbackMessage: defaultFallbackMessage}))

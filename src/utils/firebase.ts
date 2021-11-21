@@ -1,10 +1,12 @@
 import { initializeApp as initializeAdminApp } from 'firebase-admin/app';
-import { applicationDefault } from 'firebase-admin/app';
+import { credential, ServiceAccount } from 'firebase-admin';
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from '@utils/config';
+import privateKey  from '../google-private-key.json'
 
-initializeApp(firebaseConfig)
+initializeApp({
+    apiKey: process.env.FIREBASE_API_KEY
+})
 
 initializeAdminApp({
-    credential: applicationDefault()
+    credential: credential.cert(privateKey as ServiceAccount)
 })
