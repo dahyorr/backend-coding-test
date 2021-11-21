@@ -21,7 +21,7 @@ const listBlogPosts = async (event: APIGatewayProxyEvent)=> {
 
     const {posts} = await sendDatabaseQuery<QueryRoot>(getPostsQuery, {after, count})
     return {
-        statusCode: 201,
+        statusCode: 200,
         body: JSON.stringify({
             status: 'success',
             posts

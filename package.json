@@ -17,7 +17,6 @@
     "@middy/http-error-handler": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
     "@middy/http-security-headers": "^2.5.3",
-    "@middy/input-output-logger": "^2.5.3",
     "dayjs": "^1.10.7",
     "firebase": "^9.4.1",
     "firebase-admin": "^10.0.0",
