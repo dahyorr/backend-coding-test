@@ -11,9 +11,8 @@ import deleteBlogPost from '@functions/deleteBlogPost';
 
 const serverlessConfiguration: AWS = {
   service: 'backend-coding-test',
-  variablesResolutionMode: "20210326",
   frameworkVersion: '2',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
+  plugins: ['serverless-esbuild', 'serverless-offline', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     region: 'us-east-2',
@@ -26,8 +25,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      HASURA_ADMIN_SECRET: "${ssm:HASURA_ADMIN_SECRET}",
-      FIREBASE_API_KEY: "${ssm:FIREBASE_API_KEY}"
+      HASURA_ADMIN_SECRET: "${env:HASURA_ADMIN_SECRET}",
+      FIREBASE_API_KEY: "${env:FIREBASE_API_KEY}"
     },
     lambdaHashingVersion: '20201221',
   },
